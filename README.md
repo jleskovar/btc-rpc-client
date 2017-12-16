@@ -14,6 +14,13 @@ Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j`
             
     println(rpcClient.getBlockCount())
 
+## Maven
+    <dependency>
+        <groupId>com.github.jleskovar</groupId>
+        <artifactId>btc-rpc-client</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
 ## Notes
 
 Should be compatible with bitcoind and btcd JSON-RPC interfaces, for methods implemented in btcd.
