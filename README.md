@@ -1,16 +1,23 @@
 # btc-rpc-client
-Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j`
+Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j` (and optionally `nv-websocket-client` for WebSocket support)
+
+## Features
+ * Supports all of the non-deprecated RPC methods exposed by the JSON-RPC interface in bitcoind and btcd
+ * Data classes defined for all data types
+ * Supports SSL (btcd only)
+ * Experimental support for WebSocket interface (btcd only)
 
 ## Usage
 
-    // Create a secure JSON-RPC Client to a local node
+    // Create a secure HTTP JSON-RPC Client to a local node
     // NOTE: SSL supported only in btcd
     val rpcClient = BitcoinRpcClientFactory.createClient(
             user = "james",
             password = "",
             host = "localhost",
             port = 8334,
-            secure = true)
+            secure = true,
+            webSocket = false)
             
     println(rpcClient.getBlockCount())
 
