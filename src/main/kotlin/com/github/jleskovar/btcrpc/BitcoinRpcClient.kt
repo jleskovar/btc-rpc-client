@@ -79,6 +79,9 @@ interface BitcoinRpcClient {
     fun getBlock(blockHash: String, verbosity: Int = 1): BlockInfo
 
     @JsonRpcMethod("getblock")
+    fun getBlockWithTransactionsBtcd(blockHash: String, verbose: Boolean = true): String // BTCD expects verbose flag
+
+    @JsonRpcMethod("getblock")
     fun getBlockWithTransactions(blockHash: String, verbosity: Int = 2): BlockInfoWithTransactions
 
     @JsonRpcMethod("getblockchaininfo")

@@ -1,5 +1,6 @@
 package com.github.jleskovar.btcrpc
 
+import com.googlecode.jsonrpc4j.IJsonRpcClient
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient
 import com.googlecode.jsonrpc4j.ProxyUtil
 import java.net.URL
@@ -14,20 +15,9 @@ import javax.net.ssl.X509TrustManager
  */
 object BitcoinRpcClientFactory {
     @JvmStatic
-    fun createClient(user: String, password: String, host: String, port: Int, secure: Boolean = false): BitcoinRpcClient {
-        val dummyTrustManager = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-            override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        })
+    fun createClient(user: String, password: String, host: String, port: Int, secure: Boolean = false, webSocket: Boolean = false): BitcoinRpcClient {
 
-        val jsonRpcHttpClient = JsonRpcHttpClient(
-                URL("${if (secure) "https" else "http"}://$user@$host:$port"),
-                mapOf(Pair("Authorization", computeBasicAuth(user, password))))
-
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, dummyTrustManager, java.security.SecureRandom())
-        jsonRpcHttpClient.setSslContext(sslContext)
+        val jsonRpcHttpClient = createRpcClient(secure, user, host, port, password, webSocket)
 
         return ProxyUtil.createClientProxy(
                 BitcoinRpcClientFactory::class.java.classLoader,
@@ -36,8 +26,36 @@ object BitcoinRpcClientFactory {
         )
     }
 
+    private fun createRpcClient(secure: Boolean, user: String, host: String, port: Int, password: String, webSocket: Boolean): IJsonRpcClient {
+        val dummyTrustManager = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+            override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) {}
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, dummyTrustManager, java.security.SecureRandom())
+
+        val jsonRpcHttpClient: IJsonRpcClient
+
+        if (webSocket) {
+            jsonRpcHttpClient = JsonWebSocketRpcClient(
+                    "${if (secure) "wss" else "ws"}://$host:$port/ws",
+                    user, password, sslContext)
+        } else {
+            jsonRpcHttpClient = JsonRpcHttpClient(
+                    URL("${if (secure) "https" else "http"}://$user@$host:$port"),
+                    mapOf(Pair("Authorization", computeBasicAuth(user, password))))
+
+            jsonRpcHttpClient.setSslContext(sslContext)
+        }
+
+        return jsonRpcHttpClient
+    }
+
     private fun computeBasicAuth(user: String, password: String) =
             "Basic ${BASE64.encodeToString("$user:$password".toByteArray())}"
 
     private val BASE64 = Base64.getEncoder()
 }
+
