@@ -1,5 +1,6 @@
 package com.github.jleskovar.btcrpc
 
+import com.github.jleskovar.btcrpc.websocket.JsonWebSocketRpcClient
 import com.googlecode.jsonrpc4j.IJsonRpcClient
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient
 import com.googlecode.jsonrpc4j.ProxyUtil

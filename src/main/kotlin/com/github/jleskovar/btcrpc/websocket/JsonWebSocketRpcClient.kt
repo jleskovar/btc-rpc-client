@@ -1,4 +1,4 @@
-package com.github.jleskovar.btcrpc
+package com.github.jleskovar.btcrpc.websocket
 
 import com.googlecode.jsonrpc4j.IJsonRpcClient
 import com.googlecode.jsonrpc4j.JsonRpcClient

@@ -31,7 +31,7 @@ Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j` (and option
 ## Notes
 
 Should be compatible with bitcoind and btcd JSON-RPC interfaces, for methods implemented in btcd.
- * SSL mode is insecure, as it does not validate certificate paths. Not recommended for production usage. 
+ * The default SSL mode is insecure, as it does not validate certificate paths. It is highly recommended a validating SSL context is created with appropriate truststores configured, by passing in the `sslContext` parameter to `createClient` 
 
 #### Donation
 Thanks! [bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7](bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7?label=beer%20fund)
