@@ -16,10 +16,22 @@ Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j` (and option
             password = "",
             host = "localhost",
             port = 8334,
-            secure = true,
-            webSocket = false)
+            secure = true)
             
     println(rpcClient.getBlockCount())
+            
+    // OR: Create a WebSocket JSON-RPC client (btcd only)
+    val rpcClient = BitcoinRpcClientFactory.createWsClient(
+            user = "james",
+            password = "james",
+            host = "localhost",
+            port = 18334,
+            secure = true
+
+    rpcClient.connect() // WS Clients must be explicitly connected/disconnected
+    println(rpcClient.getBlockCount())
+    rpcClient.disconnect()
+           
 
 ## Maven
     <dependency>
@@ -35,10 +47,10 @@ Should be compatible with bitcoind and btcd JSON-RPC interfaces, for methods imp
  * The websocket RPC interface in btcd offers superior performance compared to HTTP-based JSON-RPC, and is recommended for applications requiring heavy usage of the JSON-RPC interface (block iteration, transaction / address lookup, etc). On a 2016 macbook pro, running btcd in regtest mode:
  
         // Performance.kt
-        Starting retrieval of first 100 blocks using http client..
-        http client took 4071 ms (24 requests/sec)
-        Starting retrieval of first 100 blocks using ws client..
-        ws client took 59 ms (1694 requests/sec)
+        Starting retrieval of first 1000 blocks using http client..
+        http client took 30867 ms (32 requests/sec)
+        Starting retrieval of first 1000 blocks using ws client..
+        ws client took 250 ms (4000 requests/sec)
 
 #### Donation
 Thanks! [bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7](bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7?label=beer%20fund)
