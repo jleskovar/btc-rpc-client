@@ -60,6 +60,9 @@ interface BitcoinRpcClient {
     @JsonRpcMethod("generate")
     fun generate(numberOfBlocks: Int, maxTries: Int? = null): List<String>
 
+    @JsonRpcMethod("generate")
+    fun generateBtcd(numberOfBlocks: Int): List<String> // btcd expects one argument
+
     @JsonRpcMethod("getaddednodeinfo")
     fun getAddedNodeInfo(): List<AddedNodeInfo>
 
