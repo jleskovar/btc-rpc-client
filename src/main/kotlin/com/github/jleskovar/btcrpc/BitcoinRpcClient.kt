@@ -6,7 +6,7 @@ import java.math.BigDecimal
 /**
  * Created by james on 1/12/17.
  */
-interface BitcoinRpcClient {
+interface BitcoinRpcClient : BtcdRpcMethods {
 
     @JsonRpcMethod("abandontransaction")
     fun abandonTransaction(transactionId: String)
@@ -60,9 +60,6 @@ interface BitcoinRpcClient {
     @JsonRpcMethod("generate")
     fun generate(numberOfBlocks: Int, maxTries: Int? = null): List<String>
 
-    @JsonRpcMethod("generate")
-    fun generateBtcd(numberOfBlocks: Int): List<String> // btcd expects one argument
-
     @JsonRpcMethod("getaddednodeinfo")
     fun getAddedNodeInfo(): List<AddedNodeInfo>
 
@@ -80,9 +77,6 @@ interface BitcoinRpcClient {
 
     @JsonRpcMethod("getblock")
     fun getBlock(blockHash: String, verbosity: Int = 1): BlockInfo
-
-    @JsonRpcMethod("getblock")
-    fun getBlockWithTransactionsBtcd(blockHash: String, verbose: Boolean = true): String // BTCD expects verbose flag
 
     @JsonRpcMethod("getblock")
     fun getBlockWithTransactions(blockHash: String, verbosity: Int = 2): BlockInfoWithTransactions
@@ -346,5 +340,19 @@ interface BitcoinRpcClient {
             vInExtra: Int?=null,
             reverse: Boolean?=null): List<SearchedTransactionResult>
 
+}
 
+/**
+ * btcd-specific extension methods
+ */
+interface BtcdRpcMethods {
+
+    @JsonRpcMethod("authenticate")
+    fun btcdAuthenticate(username: String, password: String)
+
+    @JsonRpcMethod("generate")
+    fun btcdGenerate(numberOfBlocks: Int): List<String>
+
+    @JsonRpcMethod("getblock")
+    fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean = true): String
 }

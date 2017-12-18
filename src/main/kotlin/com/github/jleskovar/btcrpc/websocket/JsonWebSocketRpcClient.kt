@@ -70,6 +70,7 @@ class JsonWebSocketRpcClient(wsUrl: String, sslContext: SSLContext) : JsonRpcCli
         return invoke(methodName, argument, clazz, mutableMapOf())
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any?> invoke(methodName: String?, argument: Any?, clazz: Class<T>?, extraHeaders: MutableMap<String, String>?): T {
         return invoke(methodName, argument, clazz as Type, extraHeaders) as T
     }

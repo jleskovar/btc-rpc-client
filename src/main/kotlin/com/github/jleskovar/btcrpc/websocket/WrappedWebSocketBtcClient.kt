@@ -3,16 +3,33 @@ package com.github.jleskovar.btcrpc.websocket
 import com.github.jleskovar.btcrpc.*
 import java.math.BigDecimal
 
-class WrappedWebSocketBtcClient(val user: String, val password: String, val delegate: BitcoinRpcClient, val jsonWebSocketRpcClient: JsonWebSocketRpcClient) : WebSocketBitcoinRpcClient {
+class WrappedWebSocketBtcClient(
+        private val username: String,
+        private val password: String,
+        private val delegate: BitcoinRpcClient,
+        private val jsonWebSocketRpcClient: JsonWebSocketRpcClient
+) : WebSocketBitcoinRpcClient {
 
     override fun connect() {
         jsonWebSocketRpcClient.connect()
         // Authenticate as soon as web socket is open (btcd)
-        jsonWebSocketRpcClient.invoke("authenticate", listOf(user, password))
+        delegate.btcdAuthenticate(username, password)
     }
 
     override fun disconnect() {
         jsonWebSocketRpcClient.disconnect()
+    }
+
+    override fun btcdAuthenticate(username: String, password: String) {
+        delegate.btcdAuthenticate(username, password)
+    }
+
+    override fun btcdGenerate(numberOfBlocks: Int): List<String> {
+        return delegate.btcdGenerate(numberOfBlocks)
+    }
+
+    override fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean): String {
+        return delegate.btcdGetBlockWithTransactions(blockHash, verbose)
     }
 
     override fun abandonTransaction(transactionId: String) {
@@ -75,10 +92,6 @@ class WrappedWebSocketBtcClient(val user: String, val password: String, val dele
         return delegate.generate(numberOfBlocks, maxTries)
     }
 
-    override fun generateBtcd(numberOfBlocks: Int): List<String> {
-        return delegate.generateBtcd(numberOfBlocks)
-    }
-
     override fun getAddedNodeInfo(): List<AddedNodeInfo> {
         return delegate.getAddedNodeInfo()
     }
@@ -97,10 +110,6 @@ class WrappedWebSocketBtcClient(val user: String, val password: String, val dele
 
     override fun getBlock(blockHash: String, verbosity: Int): BlockInfo {
         return delegate.getBlock(blockHash, verbosity)
-    }
-
-    override fun getBlockWithTransactionsBtcd(blockHash: String, verbose: Boolean): String {
-        return delegate.getBlockWithTransactionsBtcd(blockHash, verbose)
     }
 
     override fun getBlockWithTransactions(blockHash: String, verbosity: Int): BlockInfoWithTransactions {

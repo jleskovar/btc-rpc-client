@@ -8,18 +8,18 @@ import com.github.jleskovar.btcrpc.BitcoinRpcClientFactory
  */
 fun main(args: Array<String>) {
 
-    val address = "n2hcSwULcFVpR7XZD6o83A7Ckvtohvb43t"
-    val privateKey = "cN88TB4Frqcb9S5hb889Y2HqrY3Wq5XSBwHTkWgxD48dCb9ippG8"
+//    val address = "n2hcSwULcFVpR7XZD6o83A7Ckvtohvb43t"
+//    val privateKey = "cN88TB4Frqcb9S5hb889Y2HqrY3Wq5XSBwHTkWgxD48dCb9ippG8"
 
     val webSocketClient = BitcoinRpcClientFactory.createWsClient("james", "james", "localhost", 18334, true)
     val httpClient = BitcoinRpcClientFactory.createClient("james", "james", "localhost", 18334, true)
 
     // Ensure enough blocks before starting
-    val numberOfBlocks = 1000
+    val numberOfBlocks = 100
     val diff = numberOfBlocks - httpClient.getBlockCount()
     if (diff > 0) {
         println("Generating $diff blocks...")
-        httpClient.generateBtcd(diff)
+        httpClient.btcdGenerate(numberOfBlocks)
     }
 
     doPerfTestBlock("http", httpClient, numberOfBlocks)
