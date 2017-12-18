@@ -8,9 +8,8 @@ import com.neovisionaries.ws.client.WebSocketFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
-import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.BlockingQueue
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.SynchronousQueue
 import javax.net.ssl.SSLContext
 
 class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslContext: SSLContext) : JsonRpcClient(), IJsonRpcClient {
@@ -23,11 +22,9 @@ class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslC
         webSocketFactory.sslContext = sslContext
         socket = webSocketFactory.createSocket(wsUrl)
 
-        val objectMapper = objectMapper
-
         socket.addListener(object : WebSocketAdapter() {
             override fun onTextMessage(websocket: WebSocket?, text: String?) {
-                val id = objectMapper.readTree(text)["id"].asText()
+                val id = fastExtractId(text!!)
                 responses[id]?.put(text)
             }
         })
@@ -41,17 +38,22 @@ class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslC
     override fun invoke(methodName: String?, argument: Any?, returnType: Type?, extraHeaders: MutableMap<String, String>?): Any {
         val outputStream = ByteArrayOutputStream()
         super.invoke(methodName, argument, outputStream)
+        val output = outputStream.toString()
 
-        val sentOutput = outputStream.toString()
-        val id = this.objectMapper.readTree(sentOutput)["id"].asText()
+        val id = fastExtractId(output)
+        val queue = SynchronousQueue<String>()
 
-        val queue = ArrayBlockingQueue<String>(1)
-        responses[id] = queue
-        socket.sendText(sentOutput)
-
-        val response = queue.poll(5000, TimeUnit.MILLISECONDS) // Parameterise this
-        return super.readResponse(returnType, ByteArrayInputStream(response.toByteArray()))
+        try {
+            responses[id] = queue
+            socket.sendText(output)
+            val response = queue.take()
+            return super.readResponse(returnType, ByteArrayInputStream(response.toByteArray()))
+        } finally {
+            responses.remove(id)
+        }
     }
+
+    private fun fastExtractId(jsonRpc: String) = jsonRpc.substringAfterLast("\"id\":\"").substringBefore("\"")
 
     override fun invoke(methodName: String?, argument: Any?) {
         invoke(methodName, argument, null as Type?)
