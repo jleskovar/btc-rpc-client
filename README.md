@@ -52,7 +52,7 @@ Should be compatible with bitcoind and btcd JSON-RPC interfaces, for methods imp
         Starting retrieval of first 1000 blocks using ws client..
         ws client took 250 ms (4000 requests/sec)
         
- * Repeated runs of the above test (retrieving first 10000 blocks repeatedly) have yielded an average of ~8000 rps
+ * Repeated runs of the above test with 10000 blocks have yielded an average of ~8000 rps
 
 #### Donation
 Thanks! [bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7](bitcoin:17bxks7R353xniuuTkbsEXwwqFn96vr2X7?label=beer%20fund)
