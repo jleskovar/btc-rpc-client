@@ -1,6 +1,8 @@
 package com.github.jleskovar.btcrpc
 
 import com.github.jleskovar.btcrpc.websocket.JsonWebSocketRpcClient
+import com.github.jleskovar.btcrpc.websocket.WebSocketBitcoinRpcClient
+import com.github.jleskovar.btcrpc.websocket.WrappedWebSocketBtcClient
 import com.googlecode.jsonrpc4j.IJsonRpcClient
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient
 import com.googlecode.jsonrpc4j.ProxyUtil
@@ -22,12 +24,17 @@ object BitcoinRpcClientFactory {
                      host: String,
                      port: Int,
                      secure: Boolean = false,
-                     webSocket: Boolean = false,
                      sslContext: SSLContext = createUnsafeSslContext()):
 
             BitcoinRpcClient {
 
-        val jsonRpcHttpClient = createRpcClient(secure, user, host, port, password, webSocket, sslContext)
+        val jsonRpcHttpClient: IJsonRpcClient
+
+        jsonRpcHttpClient = JsonRpcHttpClient(
+                URL("${if (secure) "https" else "http"}://$user@$host:$port"),
+                mapOf(Pair("Authorization", computeBasicAuth(user, password))))
+
+        jsonRpcHttpClient.setSslContext(sslContext)
 
         return ProxyUtil.createClientProxy(
                 BitcoinRpcClientFactory::class.java.classLoader,
@@ -36,22 +43,28 @@ object BitcoinRpcClientFactory {
         )
     }
 
-    private fun createRpcClient(secure: Boolean, user: String, host: String, port: Int, password: String, webSocket: Boolean, sslContext: SSLContext): IJsonRpcClient {
-        val jsonRpcHttpClient: IJsonRpcClient
+    @JvmStatic
+    fun createWsClient(user: String,
+                       password: String,
+                       host: String,
+                       port: Int,
+                       secure: Boolean = false,
+                       sslContext: SSLContext = createUnsafeSslContext()):
 
-        if (webSocket) {
-            jsonRpcHttpClient = JsonWebSocketRpcClient(
-                    "${if (secure) "wss" else "ws"}://$host:$port/ws",
-                    user, password, sslContext)
-        } else {
-            jsonRpcHttpClient = JsonRpcHttpClient(
-                    URL("${if (secure) "https" else "http"}://$user@$host:$port"),
-                    mapOf(Pair("Authorization", computeBasicAuth(user, password))))
+            WebSocketBitcoinRpcClient {
 
-            jsonRpcHttpClient.setSslContext(sslContext)
-        }
+        val jsonWebSocketRpcClient = JsonWebSocketRpcClient(
+                wsUrl = "${if (secure) "wss" else "ws"}://$host:$port/ws",
+                sslContext = sslContext
+        )
 
-        return jsonRpcHttpClient
+        val proxyClient = ProxyUtil.createClientProxy(
+                BitcoinRpcClientFactory::class.java.classLoader,
+                BitcoinRpcClient::class.java,
+                jsonWebSocketRpcClient
+        )
+
+        return WrappedWebSocketBtcClient(user, password, proxyClient, jsonWebSocketRpcClient)
     }
 
     private fun createUnsafeSslContext(): SSLContext {

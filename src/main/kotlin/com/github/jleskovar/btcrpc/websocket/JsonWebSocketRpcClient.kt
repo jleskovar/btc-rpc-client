@@ -12,11 +12,11 @@ import java.util.concurrent.BlockingQueue
 import java.util.concurrent.SynchronousQueue
 import javax.net.ssl.SSLContext
 
-class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslContext: SSLContext) : JsonRpcClient(), IJsonRpcClient {
+class JsonWebSocketRpcClient(wsUrl: String, sslContext: SSLContext) : JsonRpcClient(), IJsonRpcClient {
 
     private val webSocketFactory = WebSocketFactory()
     private val socket: WebSocket
-    val responses = mutableMapOf<String, BlockingQueue<String>>()
+    private val responses = mutableMapOf<String, BlockingQueue<String>>()
 
     init {
         webSocketFactory.sslContext = sslContext
@@ -28,14 +28,17 @@ class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslC
                 responses[id]?.put(text)
             }
         })
-
-        socket.connect()
-
-        // invoke authenticate method as soon as websocket is open (btcd)
-        socket.sendText("""{"jsonrpc":"2.0","id":"1","method":"authenticate","params":["$user","$password"]}""")
     }
 
-    override fun invoke(methodName: String?, argument: Any?, returnType: Type?, extraHeaders: MutableMap<String, String>?): Any {
+    fun connect() {
+        socket.connect()
+    }
+
+    fun disconnect() {
+        socket.disconnect()
+    }
+
+    override fun invoke(methodName: String?, argument: Any?, returnType: Type?, extraHeaders: MutableMap<String, String>?): Any? {
         val outputStream = ByteArrayOutputStream()
         super.invoke(methodName, argument, outputStream)
         val output = outputStream.toString()
@@ -47,7 +50,7 @@ class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslC
             responses[id] = queue
             socket.sendText(output)
             val response = queue.take()
-            return super.readResponse(returnType, ByteArrayInputStream(response.toByteArray()))
+            return if (response == null) null else super.readResponse(returnType, ByteArrayInputStream(response.toByteArray()))
         } finally {
             responses.remove(id)
         }
@@ -59,7 +62,7 @@ class JsonWebSocketRpcClient(wsUrl: String, user: String, password: String, sslC
         invoke(methodName, argument, null as Type?)
     }
 
-    override fun invoke(methodName: String?, argument: Any?, returnType: Type?): Any {
+    override fun invoke(methodName: String?, argument: Any?, returnType: Type?): Any? {
         return invoke(methodName, argument, returnType, mutableMapOf())
     }
 
