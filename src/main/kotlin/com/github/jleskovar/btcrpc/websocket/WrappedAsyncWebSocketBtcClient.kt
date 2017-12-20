@@ -2,13 +2,14 @@ package com.github.jleskovar.btcrpc.websocket
 
 import com.github.jleskovar.btcrpc.*
 import java.math.BigDecimal
+import java.util.concurrent.Future
 
-class WrappedWebSocketBtcClient(
+class WrappedAsyncWebSocketBtcClient(
         private val username: String,
         private val password: String,
-        private val delegate: BitcoinRpcClient,
-        private val jsonWebSocketRpcClient: JsonWebSocketRpcClient
-) : WebSocketBitcoinRpcClient {
+        private val delegate: AsyncBitcoinRpcClient,
+        private val jsonWebSocketRpcClient: JsonAsyncWebSocketRpcClient
+) : AsyncWebSocketBitcoinRpcClient {
 
     override fun connect() {
         jsonWebSocketRpcClient.connect()
@@ -24,11 +25,11 @@ class WrappedWebSocketBtcClient(
         delegate.btcdAuthenticate(username, password)
     }
 
-    override fun btcdGenerate(numberOfBlocks: Int): List<String> {
+    override fun btcdGenerate(numberOfBlocks: Int): Future<List<String>> {
         return delegate.btcdGenerate(numberOfBlocks)
     }
 
-    override fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean): String {
+    override fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean): Future<String> {
         return delegate.btcdGetBlockWithTransactions(blockHash, verbose)
     }
 
@@ -40,7 +41,7 @@ class WrappedWebSocketBtcClient(
         delegate.abortRescan()
     }
 
-    override fun addMultiSigAddress(required: Int?, keys: List<String>): String {
+    override fun addMultiSigAddress(required: Int?, keys: List<String>): Future<String> {
         return delegate.addMultiSigAddress(required, keys)
     }
 
@@ -56,19 +57,19 @@ class WrappedWebSocketBtcClient(
         delegate.clearBanned()
     }
 
-    override fun createMultiSig(required: Int, keys: List<String>): MultiSigAddress {
+    override fun createMultiSig(required: Int, keys: List<String>): Future<MultiSigAddress> {
         return delegate.createMultiSig(required, keys)
     }
 
-    override fun createRawTransaction(inputs: List<OutPoint>, outputs: Map<String, BigDecimal>, lockTime: Int?, replaceable: Boolean?): String {
+    override fun createRawTransaction(inputs: List<OutPoint>, outputs: Map<String, BigDecimal>, lockTime: Int?, replaceable: Boolean?): Future<String> {
         return delegate.createRawTransaction(inputs, outputs, lockTime, replaceable)
     }
 
-    override fun decodeRawTransaction(transactionId: String): Transaction {
+    override fun decodeRawTransaction(transactionId: String): Future<Transaction> {
         return delegate.decodeRawTransaction(transactionId)
     }
 
-    override fun decodeScript(scriptHex: String): DecodedScript {
+    override fun decodeScript(scriptHex: String): Future<DecodedScript> {
         return delegate.decodeScript(scriptHex)
     }
 
@@ -76,11 +77,11 @@ class WrappedWebSocketBtcClient(
         delegate.disconnectNode(nodeAddress, nodeId)
     }
 
-    override fun dumpPrivateKey(address: String): String {
+    override fun dumpPrivateKey(address: String): Future<String> {
         return delegate.dumpPrivateKey(address)
     }
 
-    override fun dumpWallet(filename: String): Map<*, *> {
+    override fun dumpWallet(filename: String): Future<Map<*, *>> {
         return delegate.dumpWallet(filename)
     }
 
@@ -88,47 +89,47 @@ class WrappedWebSocketBtcClient(
         delegate.encryptWallet(passphrase)
     }
 
-    override fun generate(numberOfBlocks: Int, maxTries: Int?): List<String> {
+    override fun generate(numberOfBlocks: Int, maxTries: Int?): Future<List<String>> {
         return delegate.generate(numberOfBlocks, maxTries)
     }
 
-    override fun getAddedNodeInfo(): List<AddedNodeInfo> {
+    override fun getAddedNodeInfo(): Future<List<AddedNodeInfo>> {
         return delegate.getAddedNodeInfo()
     }
 
-    override fun getBalance(account: String, minconf: Int, includeWatchOnly: Boolean): BigDecimal {
+    override fun getBalance(account: String, minconf: Int, includeWatchOnly: Boolean): Future<BigDecimal> {
         return delegate.getBalance(account, minconf, includeWatchOnly)
     }
 
-    override fun getBestBlockhash(): String {
+    override fun getBestBlockhash(): Future<String> {
         return delegate.getBestBlockhash()
     }
 
-    override fun getBlockData(blockHash: String, verbosity: Int): String {
+    override fun getBlockData(blockHash: String, verbosity: Int): Future<String> {
         return delegate.getBlockData(blockHash, verbosity)
     }
 
-    override fun getBlock(blockHash: String, verbosity: Int): BlockInfo {
+    override fun getBlock(blockHash: String, verbosity: Int): Future<BlockInfo> {
         return delegate.getBlock(blockHash, verbosity)
     }
 
-    override fun getBlockWithTransactions(blockHash: String, verbosity: Int): BlockInfoWithTransactions {
+    override fun getBlockWithTransactions(blockHash: String, verbosity: Int): Future<BlockInfoWithTransactions> {
         return delegate.getBlockWithTransactions(blockHash, verbosity)
     }
 
-    override fun getBlockchainInfo(): BlockChainInfo {
+    override fun getBlockchainInfo(): Future<BlockChainInfo> {
         return delegate.getBlockchainInfo()
     }
 
-    override fun getBlockCount(): Int {
+    override fun getBlockCount(): Future<Int> {
         return delegate.getBlockCount()
     }
 
-    override fun getBlockHash(height: Int): String {
+    override fun getBlockHash(height: Int): Future<String> {
         return delegate.getBlockHash(height)
     }
 
-    override fun getBlockHeader(blockHash: String, verbose: Boolean?): Any {
+    override fun getBlockHeader(blockHash: String, verbose: Boolean?): Future<Any> {
         return delegate.getBlockHeader(blockHash, verbose)
     }
 
@@ -136,95 +137,95 @@ class WrappedWebSocketBtcClient(
         delegate.getBlockTemplate(blockTemplateRequest)
     }
 
-    override fun getChainTips(): List<ChainTip> {
+    override fun getChainTips(): Future<List<ChainTip>> {
         return delegate.getChainTips()
     }
 
-    override fun getChainTransactionStats(blockWindowSize: Int?, blockHashEnd: String?): ChainTransactionStats {
+    override fun getChainTransactionStats(blockWindowSize: Int?, blockHashEnd: String?): Future<ChainTransactionStats> {
         return delegate.getChainTransactionStats(blockWindowSize, blockHashEnd)
     }
 
-    override fun getConnectionCount(): Int {
+    override fun getConnectionCount(): Future<Int> {
         return delegate.getConnectionCount()
     }
 
-    override fun getDifficulty(): BigDecimal {
+    override fun getDifficulty(): Future<BigDecimal> {
         return delegate.getDifficulty()
     }
 
-    override fun getMemoryInfo(): Any {
+    override fun getMemoryInfo(): Future<Any> {
         return delegate.getMemoryInfo()
     }
 
-    override fun getMempoolAncestors(transactionId: String): Any {
+    override fun getMempoolAncestors(transactionId: String): Future<Any> {
         return delegate.getMempoolAncestors(transactionId)
     }
 
-    override fun getMempoolDescendants(): Any {
+    override fun getMempoolDescendants(): Future<Any> {
         return delegate.getMempoolDescendants()
     }
 
-    override fun getMempoolEntry(transactionId: String): Map<*, *> {
+    override fun getMempoolEntry(transactionId: String): Future<Map<*, *>> {
         return delegate.getMempoolEntry(transactionId)
     }
 
-    override fun getMempoolInfo(): MemPoolInfo {
+    override fun getMempoolInfo(): Future<MemPoolInfo> {
         return delegate.getMempoolInfo()
     }
 
-    override fun getMiningInfo(): MiningInfo {
+    override fun getMiningInfo(): Future<MiningInfo> {
         return delegate.getMiningInfo()
     }
 
-    override fun getNetworkTotals(): NetworkTotals {
+    override fun getNetworkTotals(): Future<NetworkTotals> {
         return delegate.getNetworkTotals()
     }
 
-    override fun getNetworkHashesPerSeconds(lastBlocks: Int, height: Int): Long {
+    override fun getNetworkHashesPerSeconds(lastBlocks: Int, height: Int): Future<Long> {
         return delegate.getNetworkHashesPerSeconds(lastBlocks, height)
     }
 
-    override fun getNetworkInfo(): NetworkInfo {
+    override fun getNetworkInfo(): Future<NetworkInfo> {
         return delegate.getNetworkInfo()
     }
 
-    override fun getNewAddress(): String {
+    override fun getNewAddress(): Future<String> {
         return delegate.getNewAddress()
     }
 
-    override fun getPeerInfo(): List<PeerInfo> {
+    override fun getPeerInfo(): Future<List<PeerInfo>> {
         return delegate.getPeerInfo()
     }
 
-    override fun getRawChangeAddress(): String {
+    override fun getRawChangeAddress(): Future<String> {
         return delegate.getRawChangeAddress()
     }
 
-    override fun getRawMemPool(verbose: Boolean): List<Map<*, *>> {
+    override fun getRawMemPool(verbose: Boolean): Future<List<Map<*, *>>> {
         return delegate.getRawMemPool(verbose)
     }
 
-    override fun getRawTransaction(transactionId: String): Transaction {
+    override fun getRawTransaction(transactionId: String): Future<Transaction> {
         return delegate.getRawTransaction(transactionId)
     }
 
-    override fun getReceivedByAddress(address: String, minConfirmations: Int): BigDecimal {
+    override fun getReceivedByAddress(address: String, minConfirmations: Int): Future<BigDecimal> {
         return delegate.getReceivedByAddress(address, minConfirmations)
     }
 
-    override fun getWalletTransaction(transactionId: String): Map<*, *> {
+    override fun getWalletTransaction(transactionId: String): Future<Map<*, *>> {
         return delegate.getWalletTransaction(transactionId)
     }
 
-    override fun getUnspentTransactionOutputInfo(transactionId: String, index: Int): Map<*, *> {
+    override fun getUnspentTransactionOutputInfo(transactionId: String, index: Int): Future<Map<*, *>> {
         return delegate.getUnspentTransactionOutputInfo(transactionId, index)
     }
 
-    override fun getUnspentTransactionOutputSetInfo(): UtxoSet {
+    override fun getUnspentTransactionOutputSetInfo(): Future<UtxoSet> {
         return delegate.getUnspentTransactionOutputSetInfo()
     }
 
-    override fun getWalletInfo(): Map<*, *> {
+    override fun getWalletInfo(): Future<Map<*, *>> {
         return delegate.getWalletInfo()
     }
 
@@ -248,39 +249,39 @@ class WrappedWebSocketBtcClient(
         delegate.keypoolRefill(newSize)
     }
 
-    override fun listAddressGroupings(): List<*> {
+    override fun listAddressGroupings(): Future<List<*>> {
         return delegate.listAddressGroupings()
     }
 
-    override fun listBanned(): List<String> {
+    override fun listBanned(): Future<List<String>> {
         return delegate.listBanned()
     }
 
-    override fun listLockUnspent(): List<Map<*, *>> {
+    override fun listLockUnspent(): Future<List<Map<*, *>>> {
         return delegate.listLockUnspent()
     }
 
-    override fun listReceivedByAddress(minConfirmations: Int?, includeEmpty: Boolean?, includeWatchOnly: Boolean?): List<Map<*, *>> {
+    override fun listReceivedByAddress(minConfirmations: Int?, includeEmpty: Boolean?, includeWatchOnly: Boolean?): Future<List<Map<*, *>>> {
         return delegate.listReceivedByAddress(minConfirmations, includeEmpty, includeWatchOnly)
     }
 
-    override fun listSinceBlock(blockHash: String?, targetConfirmations: Int?, includeWatchOnly: Boolean?, includeRemoved: Boolean?): Map<*, *> {
+    override fun listSinceBlock(blockHash: String?, targetConfirmations: Int?, includeWatchOnly: Boolean?, includeRemoved: Boolean?): Future<Map<*, *>> {
         return delegate.listSinceBlock(blockHash, targetConfirmations, includeWatchOnly, includeRemoved)
     }
 
-    override fun listTransactions(account: String?, count: Int?, skip: Int?, includeWatchOnly: Boolean?): List<Map<*, *>> {
+    override fun listTransactions(account: String?, count: Int?, skip: Int?, includeWatchOnly: Boolean?): Future<List<Map<*, *>>> {
         return delegate.listTransactions(account, count, skip, includeWatchOnly)
     }
 
-    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): QueryResult {
+    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): Future<QueryResult> {
         return delegate.listUnspent(minConfirmations, maxConfirmations, addresses, includeUnsafe, queryOptions)
     }
 
-    override fun listWallets(): List<String> {
+    override fun listWallets(): Future<List<String>> {
         return delegate.listWallets()
     }
 
-    override fun lockUnspent(unlock: Boolean, unspentOutputs: List<OutPoint>): Boolean {
+    override fun lockUnspent(unlock: Boolean, unspentOutputs: List<OutPoint>): Future<Boolean> {
         return delegate.lockUnspent(unlock, unspentOutputs)
     }
 
@@ -312,7 +313,7 @@ class WrappedWebSocketBtcClient(
         delegate.sendRawTransaction(transaction)
     }
 
-    override fun sendToAddress(address: String, amount: BigDecimal, comment: String?, commentTo: String?, subtractFee: Boolean?, replaceable: Boolean?, minConfirmations: Int?, feeEstimateMode: FeeEstimateMode?): String {
+    override fun sendToAddress(address: String, amount: BigDecimal, comment: String?, commentTo: String?, subtractFee: Boolean?, replaceable: Boolean?, minConfirmations: Int?, feeEstimateMode: FeeEstimateMode?): Future<String> {
         return delegate.sendToAddress(address, amount, comment, commentTo, subtractFee, replaceable, minConfirmations, feeEstimateMode)
     }
 
@@ -340,7 +341,7 @@ class WrappedWebSocketBtcClient(
         delegate.submitBlock(blockData)
     }
 
-    override fun uptime(): Int {
+    override fun uptime(): Future<Int> {
         return delegate.uptime()
     }
 
@@ -356,11 +357,11 @@ class WrappedWebSocketBtcClient(
         delegate.verifyMessage(address, signature, message)
     }
 
-    override fun searchRawSerialisedTransactions(address: String, verbose: Int?, skip: Int?, count: Int?, vInExtra: Int?, reverse: Boolean?): List<String> {
+    override fun searchRawSerialisedTransactions(address: String, verbose: Int?, skip: Int?, count: Int?, vInExtra: Int?, reverse: Boolean?): Future<List<String>> {
         return delegate.searchRawSerialisedTransactions(address, verbose, skip, count, vInExtra, reverse)
     }
 
-    override fun searchRawVerboseTransactions(address: String, verbose: Int?, skip: Int?, count: Int?, vInExtra: Int?, reverse: Boolean?): List<SearchedTransactionResult> {
+    override fun searchRawVerboseTransactions(address: String, verbose: Int?, skip: Int?, count: Int?, vInExtra: Int?, reverse: Boolean?): Future<List<SearchedTransactionResult>> {
         return delegate.searchRawVerboseTransactions(address, verbose, skip, count, vInExtra, reverse)
     }
 

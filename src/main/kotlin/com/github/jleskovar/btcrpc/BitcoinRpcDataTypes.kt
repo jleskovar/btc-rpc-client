@@ -10,6 +10,8 @@ enum class BlockTemplateRequestMode { template, proposal }
 
 enum class FeeEstimateMode { UNSET, ECONOMICAL, CONSERVATIVE }
 
+enum class NodeListOperation { onetry, add, remove }
+
 data class OutPoint(
         val txid: String,
         val vout: Int)

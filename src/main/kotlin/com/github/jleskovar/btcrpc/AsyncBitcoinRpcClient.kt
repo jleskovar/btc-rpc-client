@@ -2,11 +2,12 @@ package com.github.jleskovar.btcrpc
 
 import com.googlecode.jsonrpc4j.JsonRpcMethod
 import java.math.BigDecimal
+import java.util.concurrent.Future
 
 /**
  * Created by james on 1/12/17.
  */
-interface BitcoinRpcClient {
+interface AsyncBitcoinRpcClient {
 
     @JsonRpcMethod("abandontransaction")
     fun abandonTransaction(transactionId: String)
@@ -15,7 +16,7 @@ interface BitcoinRpcClient {
     fun abortRescan()
 
     @JsonRpcMethod("addmultisigaddress")
-    fun addMultiSigAddress(required: Int? = null, keys: List<String>): String
+    fun addMultiSigAddress(required: Int? = null, keys: List<String>): Future<String>
 
     @JsonRpcMethod("addnode")
     fun addNode(address: String, operation: NodeListOperation)
@@ -27,7 +28,7 @@ interface BitcoinRpcClient {
     fun clearBanned()
 
     @JsonRpcMethod("createmultisig")
-    fun createMultiSig(required: Int, keys: List<String>): MultiSigAddress
+    fun createMultiSig(required: Int, keys: List<String>): Future<MultiSigAddress>
 
     @JsonRpcMethod("createrawtransaction")
     fun createRawTransaction(
@@ -35,136 +36,136 @@ interface BitcoinRpcClient {
             outputs: Map<String, BigDecimal>,
             lockTime: Int? = null,
             replaceable: Boolean? = null
-    ): String
+    ): Future<String>
 
     @JsonRpcMethod("decoderawtransaction")
-    fun decodeRawTransaction(transactionId: String): Transaction
+    fun decodeRawTransaction(transactionId: String): Future<Transaction>
 
     @JsonRpcMethod("decodescript")
-    fun decodeScript(scriptHex: String): DecodedScript
+    fun decodeScript(scriptHex: String): Future<DecodedScript>
 
     @JsonRpcMethod("disconnectnode")
     fun disconnectNode(nodeAddress: String? = null, nodeId: Int? = null)
 
     @JsonRpcMethod("dumpprivkey")
-    fun dumpPrivateKey(address: String): String
+    fun dumpPrivateKey(address: String): Future<String>
 
     @JsonRpcMethod("dumpwallet")
-    fun dumpWallet(filename: String): Map<*, *>
+    fun dumpWallet(filename: String): Future<Map<*, *>>
 
     @JsonRpcMethod("encryptwallet")
     fun encryptWallet(passphrase: String)
 
     @JsonRpcMethod("generate")
-    fun generate(numberOfBlocks: Int, maxTries: Int? = null): List<String>
+    fun generate(numberOfBlocks: Int, maxTries: Int? = null): Future<List<String>>
 
     @JsonRpcMethod("getaddednodeinfo")
-    fun getAddedNodeInfo(): List<AddedNodeInfo>
+    fun getAddedNodeInfo(): Future<List<AddedNodeInfo>>
 
     @JsonRpcMethod("getbalance")
     fun getBalance(
             account: String = "*",
             minconf: Int = 1,
-            includeWatchOnly: Boolean = false): BigDecimal
+            includeWatchOnly: Boolean = false): Future<BigDecimal>
 
     @JsonRpcMethod("getbestblockhash")
-    fun getBestBlockhash(): String
+    fun getBestBlockhash(): Future<String>
 
     @JsonRpcMethod("getblock")
-    fun getBlockData(blockHash: String, verbosity: Int = 0): String
+    fun getBlockData(blockHash: String, verbosity: Int = 0): Future<String>
 
     @JsonRpcMethod("getblock")
-    fun getBlock(blockHash: String, verbosity: Int = 1): BlockInfo
+    fun getBlock(blockHash: String, verbosity: Int = 1): Future<BlockInfo>
 
     @JsonRpcMethod("getblock")
-    fun getBlockWithTransactions(blockHash: String, verbosity: Int = 2): BlockInfoWithTransactions
+    fun getBlockWithTransactions(blockHash: String, verbosity: Int = 2): Future<BlockInfoWithTransactions>
 
     @JsonRpcMethod("getblockchaininfo")
-    fun getBlockchainInfo(): BlockChainInfo
+    fun getBlockchainInfo(): Future<BlockChainInfo>
 
     @JsonRpcMethod("getblockcount")
-    fun getBlockCount(): Int
+    fun getBlockCount(): Future<Int>
 
     @JsonRpcMethod("getblockhash")
-    fun getBlockHash(height: Int): String
+    fun getBlockHash(height: Int): Future<String>
 
     @JsonRpcMethod("getblockheader")
-    fun getBlockHeader(blockHash: String, verbose: Boolean? = false): Any
+    fun getBlockHeader(blockHash: String, verbose: Boolean? = false): Future<Any>
 
     @JsonRpcMethod("getblocktemplate")
     fun getBlockTemplate(blockTemplateRequest: BlockTemplateRequest? = null)
 
     @JsonRpcMethod("getchaintips")
-    fun getChainTips(): List<ChainTip>
+    fun getChainTips(): Future<List<ChainTip>>
 
     @JsonRpcMethod("getchaintxstats")
     fun getChainTransactionStats(
             blockWindowSize: Int? = null,
             blockHashEnd: String? = null
-    ): ChainTransactionStats
+    ): Future<ChainTransactionStats>
 
     @JsonRpcMethod("getconnectioncount")
-    fun getConnectionCount(): Int
+    fun getConnectionCount(): Future<Int>
 
     @JsonRpcMethod("getdifficulty")
-    fun getDifficulty(): BigDecimal
+    fun getDifficulty(): Future<BigDecimal>
 
     @JsonRpcMethod("getmemoryinfo")
-    fun getMemoryInfo(): Any
+    fun getMemoryInfo(): Future<Any>
 
     @JsonRpcMethod("getmempoolancestors")
-    fun getMempoolAncestors(transactionId: String): Any
+    fun getMempoolAncestors(transactionId: String): Future<Any>
 
     @JsonRpcMethod("getmempooldescendants")
-    fun getMempoolDescendants(): Any
+    fun getMempoolDescendants(): Future<Any>
 
     @JsonRpcMethod("getmempoolentry")
-    fun getMempoolEntry(transactionId: String): Map<*, *>
+    fun getMempoolEntry(transactionId: String): Future<Map<*, *>>
 
     @JsonRpcMethod("getmempoolinfo")
-    fun getMempoolInfo(): MemPoolInfo
+    fun getMempoolInfo(): Future<MemPoolInfo>
 
     @JsonRpcMethod("getmininginfo")
-    fun getMiningInfo(): MiningInfo
+    fun getMiningInfo(): Future<MiningInfo>
 
     @JsonRpcMethod("getnettotals")
-    fun getNetworkTotals(): NetworkTotals
+    fun getNetworkTotals(): Future<NetworkTotals>
 
     @JsonRpcMethod("getnetworkhashps")
-    fun getNetworkHashesPerSeconds(lastBlocks: Int, height: Int): Long
+    fun getNetworkHashesPerSeconds(lastBlocks: Int, height: Int): Future<Long>
 
     @JsonRpcMethod("getnetworkinfo")
-    fun getNetworkInfo(): NetworkInfo
+    fun getNetworkInfo(): Future<NetworkInfo>
 
     @JsonRpcMethod("getnewaddress")
-    fun getNewAddress(): String
+    fun getNewAddress(): Future<String>
 
     @JsonRpcMethod("getpeerinfo")
-    fun getPeerInfo(): List<PeerInfo>
+    fun getPeerInfo(): Future<List<PeerInfo>>
 
     @JsonRpcMethod("getrawchangeaddress")
-    fun getRawChangeAddress(): String
+    fun getRawChangeAddress(): Future<String>
 
     @JsonRpcMethod("getrawmempool")
-    fun getRawMemPool(verbose: Boolean = false): List<Map<*, *>>
+    fun getRawMemPool(verbose: Boolean = false): Future<List<Map<*, *>>>
 
     @JsonRpcMethod("getrawtransaction")
-    fun getRawTransaction(transactionId: String): Transaction
+    fun getRawTransaction(transactionId: String): Future<Transaction>
 
     @JsonRpcMethod("getreceivedbyaddress")
-    fun getReceivedByAddress(address: String, minConfirmations: Int = 1): BigDecimal
+    fun getReceivedByAddress(address: String, minConfirmations: Int = 1): Future<BigDecimal>
 
     @JsonRpcMethod("gettransaction")
-    fun getWalletTransaction(transactionId: String): Map<*, *>
+    fun getWalletTransaction(transactionId: String): Future<Map<*, *>>
 
     @JsonRpcMethod("gettxout")
-    fun getUnspentTransactionOutputInfo(transactionId: String, index: Int): Map<*, *>
+    fun getUnspentTransactionOutputInfo(transactionId: String, index: Int): Future<Map<*, *>>
 
     @JsonRpcMethod("gettxoutsetinfo")
-    fun getUnspentTransactionOutputSetInfo(): UtxoSet
+    fun getUnspentTransactionOutputSetInfo(): Future<UtxoSet>
 
     @JsonRpcMethod("getwalletinfo")
-    fun getWalletInfo(): Map<*, *>
+    fun getWalletInfo(): Future<Map<*, *>>
 
     @JsonRpcMethod("importaddress")
     fun importAddress(
@@ -194,20 +195,20 @@ interface BitcoinRpcClient {
     fun keypoolRefill(newSize: Int = 100)
 
     @JsonRpcMethod("listaddressgroupings")
-    fun listAddressGroupings(): List<*>
+    fun listAddressGroupings(): Future<List<*>>
 
     @JsonRpcMethod("listbanned")
-    fun listBanned(): List<String>
+    fun listBanned(): Future<List<String>>
 
     @JsonRpcMethod("listlockunspent")
-    fun listLockUnspent(): List<Map<*, *>>
+    fun listLockUnspent(): Future<List<Map<*, *>>>
 
     @JsonRpcMethod("listreceivedbyaddress")
     fun listReceivedByAddress(
             minConfirmations: Int? = null,
             includeEmpty: Boolean? = null,
             includeWatchOnly: Boolean? = null
-    ): List<Map<*, *>>
+    ): Future<List<Map<*, *>>>
 
     @JsonRpcMethod("listsinceblock")
     fun listSinceBlock(
@@ -215,7 +216,7 @@ interface BitcoinRpcClient {
             targetConfirmations: Int? = null,
             includeWatchOnly: Boolean? = null,
             includeRemoved: Boolean? = null
-    ): Map<*, *>
+    ): Future<Map<*, *>>
 
     @JsonRpcMethod("listtransactions")
     fun listTransactions(
@@ -223,7 +224,7 @@ interface BitcoinRpcClient {
             count: Int? = null,
             skip: Int? = null,
             includeWatchOnly: Boolean? = null
-    ): List<Map<*, *>>
+    ): Future<List<Map<*, *>>>
 
     @JsonRpcMethod("listunspent")
     fun listUnspent(
@@ -232,13 +233,13 @@ interface BitcoinRpcClient {
             addresses: List<String>? = null,
             includeUnsafe: Boolean? = null,
             queryOptions: QueryOptions? = null
-    ): QueryResult
+    ): Future<QueryResult>
 
     @JsonRpcMethod("listwallets")
-    fun listWallets(): List<String>
+    fun listWallets(): Future<List<String>>
 
     @JsonRpcMethod("lockunspent")
-    fun lockUnspent(unlock: Boolean, unspentOutputs: List<OutPoint>): Boolean
+    fun lockUnspent(unlock: Boolean, unspentOutputs: List<OutPoint>): Future<Boolean>
 
     fun ping()
 
@@ -275,7 +276,7 @@ interface BitcoinRpcClient {
             subtractFee: Boolean? = null,
             replaceable: Boolean? = null,
             minConfirmations: Int? = null,
-            feeEstimateMode: FeeEstimateMode? = null): String
+            feeEstimateMode: FeeEstimateMode? = null): Future<String>
 
     @JsonRpcMethod("setban")
     fun setBan(
@@ -305,7 +306,7 @@ interface BitcoinRpcClient {
     @JsonRpcMethod("submitblock")
     fun submitBlock(blockData: String)
 
-    fun uptime(): Int
+    fun uptime(): Future<Int>
 
     @JsonRpcMethod("validateaddress")
     fun validateAddress(address: String)
@@ -327,7 +328,7 @@ interface BitcoinRpcClient {
             skip: Int?=null,
             count: Int?=null,
             vInExtra: Int?=null,
-            reverse: Boolean?=null): List<String>
+            reverse: Boolean?=null): Future<List<String>>
 
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawVerboseTransactions(
@@ -336,7 +337,7 @@ interface BitcoinRpcClient {
             skip: Int?=null,
             count: Int?=null,
             vInExtra: Int?=null,
-            reverse: Boolean?=null): List<SearchedTransactionResult>
+            reverse: Boolean?=null): Future<List<SearchedTransactionResult>>
 
     /**
      * btcd-specific extension methods
@@ -345,8 +346,8 @@ interface BitcoinRpcClient {
     fun btcdAuthenticate(username: String, password: String)
 
     @JsonRpcMethod("generate")
-    fun btcdGenerate(numberOfBlocks: Int): List<String>
+    fun btcdGenerate(numberOfBlocks: Int): Future<List<String>>
 
     @JsonRpcMethod("getblock")
-    fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean = true): String
+    fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean = true): Future<String>
 }
