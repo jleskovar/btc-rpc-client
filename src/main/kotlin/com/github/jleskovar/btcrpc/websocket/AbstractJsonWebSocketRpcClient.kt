@@ -5,7 +5,6 @@ import com.googlecode.jsonrpc4j.JsonRpcClient
 import com.neovisionaries.ws.client.WebSocket
 import com.neovisionaries.ws.client.WebSocketAdapter
 import com.neovisionaries.ws.client.WebSocketFactory
-import com.neovisionaries.ws.client.WebSocketListener
 import java.lang.reflect.Type
 import javax.net.ssl.SSLContext
 
