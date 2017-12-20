@@ -12,4 +12,12 @@ fun main(args: Array<String>) {
     webSocketClient.connect()
     println(webSocketClient.getBlockCount())
     webSocketClient.disconnect()
+
+    val asyncWebSockets = BitcoinRpcClientFactory.createAsyncWsClient("james", "james", "localhost", 18334, true)
+
+    asyncWebSockets.connect()
+    val future = asyncWebSockets.getBlockCount()
+    println(future.get())
+    asyncWebSockets.disconnect()
+
 }

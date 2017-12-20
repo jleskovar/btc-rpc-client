@@ -26,7 +26,7 @@ class JsonAsyncWebSocketRpcClient(wsUrl: String, sslContext: SSLContext) : Abstr
         val id = fastExtractId(output)
 
         val realReturnType = when(returnType) {
-            is ParameterizedType -> returnType.actualTypeArguments[0]
+            is ParameterizedType -> returnType.actualTypeArguments[0] // Dig out "T" from a "CompletableFuture<T>"
             else -> returnType
         }
 
