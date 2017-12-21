@@ -31,6 +31,14 @@ Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j` (and option
     rpcClient.connect() // WS Clients must be explicitly connected/disconnected
     println(rpcClient.getBlockCount())
     rpcClient.disconnect()
+    
+    // Asynchronous websocket (all methods return a CompletableFuture<T>)
+    val asyncWebSockets = BitcoinRpcClientFactory.createAsyncWsClient("james", "james", "localhost", 18334, true)
+
+    asyncWebSockets.connect()
+    val future: Future<Int> = asyncWebSockets.getBlockCount()
+    println(future.get())
+    asyncWebSockets.disconnect()
            
 
 ## Maven
