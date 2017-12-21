@@ -5,7 +5,7 @@ Kotlin-based JSON-RPC client for bitcoind/btcd. Requires `jsonrpc4j` (and option
  * Supports all of the non-deprecated RPC methods exposed by the JSON-RPC interface in bitcoind and btcd
  * Data classes defined for all data types
  * Supports SSL (btcd only)
- * Experimental support for WebSocket interface (btcd only)
+ * Experimental support for WebSocket interface (both synchronous and async - btcd only)
 
 ## Usage
 
