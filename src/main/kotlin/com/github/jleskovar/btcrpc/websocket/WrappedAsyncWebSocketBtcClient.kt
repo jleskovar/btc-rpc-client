@@ -29,8 +29,8 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.btcdGenerate(numberOfBlocks)
     }
 
-    override fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean): CompletableFuture<String> {
-        return delegate.btcdGetBlockWithTransactions(blockHash, verbose)
+    override fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean, verboseTx: Boolean): CompletableFuture<BlockInfoWithTransactions> {
+        return delegate.btcdGetBlockWithTransactions(blockHash, verbose, verboseTx)
     }
 
     override fun abandonTransaction(transactionId: String): CompletableFuture<Void> {

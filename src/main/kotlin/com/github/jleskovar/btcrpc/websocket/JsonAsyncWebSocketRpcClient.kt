@@ -12,9 +12,19 @@ class JsonAsyncWebSocketRpcClient(wsUrl: String, sslContext: SSLContext) : Abstr
 
     override fun handleTextMessage(text: String?) {
         val id = fastExtractId(text!!)
-        val returnType = responses[id]?.first
-        val responseValue = super.readResponse(returnType, ByteArrayInputStream(text.toByteArray()))
-        responses[id]?.second?.complete(responseValue)
+        val future = responses[id]?.second
+        if (hasError(text)) {
+            val error = extractError(text)
+            future?.completeExceptionally(JsonRpcError(error.first, error.second))
+        } else {
+            val returnType = responses[id]?.first
+            try {
+                val responseValue = super.readResponse(returnType, ByteArrayInputStream(text.toByteArray()))
+                future?.complete(responseValue)
+            } catch (ex: Exception) {
+                future?.completeExceptionally(ex)
+            }
+        }
         responses.remove(id)
     }
 

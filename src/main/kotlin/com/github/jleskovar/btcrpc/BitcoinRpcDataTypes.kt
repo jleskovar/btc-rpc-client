@@ -288,6 +288,7 @@ data class BlockInfoWithTransactions(
         val versionHex: String? = null,
         val merkleroot: String? = null,
         val tx: List<Transaction>? = null,
+        val rawtx: List<Transaction>? = null,
         val time: Long? = null,
         val mediantime: Long? = null,
         val nonce: Long? = null,

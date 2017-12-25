@@ -351,5 +351,5 @@ interface AsyncBitcoinRpcClient {
     fun btcdGenerate(numberOfBlocks: Int): CompletableFuture<List<String>>
 
     @JsonRpcMethod("getblock")
-    fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean = true): CompletableFuture<String>
+    fun btcdGetBlockWithTransactions(blockHash: String, verbose: Boolean = true, verboseTx: Boolean = true): CompletableFuture<BlockInfoWithTransactions>
 }

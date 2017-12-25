@@ -1,5 +1,6 @@
 package com.github.jleskovar.btcrpc.websocket
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.googlecode.jsonrpc4j.IJsonRpcClient
 import com.googlecode.jsonrpc4j.JsonRpcClient
 import com.neovisionaries.ws.client.WebSocket
@@ -43,6 +44,15 @@ abstract class AbstractJsonWebSocketRpcClient(wsUrl: String, sslContext: SSLCont
 
     protected fun fastExtractId(jsonRpc: String) = jsonRpc.substringAfterLast("\"id\":\"").substringBefore("\"")
 
+    protected fun hasError(jsonRpcResponse: String) = !jsonRpcResponse.contains("\"error\":null")
+
+    protected fun extractError(jsonRpcResponse: String): Pair<Int, String> {
+        val errorNode = ObjectMapper().readTree(jsonRpcResponse)["error"]
+        val errorCode = errorNode["code"].asInt()
+        val errorMessage = errorNode["message"].asText()
+        return Pair(errorCode, errorMessage)
+    }
+
     override fun invoke(methodName: String?, argument: Any?) {
         invoke(methodName, argument, null as Type?)
     }
@@ -60,3 +70,5 @@ abstract class AbstractJsonWebSocketRpcClient(wsUrl: String, sslContext: SSLCont
         return invoke(methodName, argument, clazz as Type, extraHeaders) as T
     }
 }
+
+class JsonRpcError(val code: Int, val errorMessage: String) : Exception(errorMessage)

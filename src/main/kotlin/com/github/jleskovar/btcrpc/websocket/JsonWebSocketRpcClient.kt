@@ -1,8 +1,5 @@
 package com.github.jleskovar.btcrpc.websocket
 
-import com.neovisionaries.ws.client.WebSocket
-import com.neovisionaries.ws.client.WebSocketAdapter
-import com.neovisionaries.ws.client.WebSocketListener
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
@@ -30,6 +27,10 @@ class JsonWebSocketRpcClient(wsUrl: String, sslContext: SSLContext) : AbstractJs
             responses[id] = completableFuture
             socket.sendText(output)
             val response = completableFuture.get()
+            if (hasError(response)) {
+                val error = extractError(response)
+                throw JsonRpcError(error.first, error.second)
+            }
             return if (response == null) null else super.readResponse(returnType, ByteArrayInputStream(response.toByteArray()))
         } finally {
             responses.remove(id)
