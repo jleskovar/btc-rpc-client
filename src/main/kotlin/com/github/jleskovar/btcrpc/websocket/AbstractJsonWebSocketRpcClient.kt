@@ -40,6 +40,8 @@ abstract class AbstractJsonWebSocketRpcClient(wsUrl: String, sslContext: SSLCont
 
     fun disconnect() {
         socket.disconnect()
+        // Hack to ensure reading close timer task is not running by the time our application quits
+        Thread.getAllStackTraces().keys.filter { it.name == "ReadingThreadCloseTimer" }.forEach { it.stop() }
     }
 
     protected fun fastExtractId(jsonRpc: String) = jsonRpc.substringAfterLast("\"id\":\"").substringBefore("\"")
