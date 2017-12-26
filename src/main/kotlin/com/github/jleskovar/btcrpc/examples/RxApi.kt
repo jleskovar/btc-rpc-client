@@ -26,8 +26,6 @@ class BlockWalker(val client: AsyncBitcoinRpcClient, val startingBlockHeight: In
     fun getTransactions(): Observable<Transaction> {
         return getBlocks()
                 .flatMap { Observable.fromIterable(it.rawtx) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
     }
 }
 
