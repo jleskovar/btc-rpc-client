@@ -150,7 +150,7 @@ interface AsyncBitcoinRpcClient {
     fun getRawMemPool(verbose: Boolean = false): CompletableFuture<List<Map<*, *>>>
 
     @JsonRpcMethod("getrawtransaction")
-    fun getRawTransaction(transactionId: String): CompletableFuture<Transaction>
+    fun getRawTransaction(transactionId: String, verbosity: Int = 1): CompletableFuture<Transaction>
 
     @JsonRpcMethod("getreceivedbyaddress")
     fun getReceivedByAddress(address: String, minConfirmations: Int = 1): CompletableFuture<BigDecimal>
@@ -234,7 +234,7 @@ interface AsyncBitcoinRpcClient {
             addresses: List<String>? = null,
             includeUnsafe: Boolean? = null,
             queryOptions: QueryOptions? = null
-    ): CompletableFuture<QueryResult>
+    ): CompletableFuture<List<QueryResult>>
 
     @JsonRpcMethod("listwallets")
     fun listWallets(): CompletableFuture<List<String>>
@@ -267,7 +267,7 @@ interface AsyncBitcoinRpcClient {
     ): CompletableFuture<Void>
 
     @JsonRpcMethod("sendrawtransaction")
-    fun sendRawTransaction(transaction: String): CompletableFuture<Void>
+    fun sendRawTransaction(transaction: String): CompletableFuture<String>
 
     @JsonRpcMethod("sendtoaddress")
     fun sendToAddress(
@@ -314,7 +314,7 @@ interface AsyncBitcoinRpcClient {
     fun validateAddress(address: String): CompletableFuture<Void>
 
     @JsonRpcMethod("verifychain")
-    fun verifyChain(): CompletableFuture<Void>
+    fun verifyChain(): CompletableFuture<Boolean>
 
     @JsonRpcMethod("verifymessage")
     fun verifyMessage(

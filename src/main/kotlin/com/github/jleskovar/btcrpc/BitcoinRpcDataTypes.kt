@@ -182,6 +182,7 @@ data class UtxoSet(
 data class QueryResult(
         val txid: String? = null,
         val vout: Int? = null,
+        val label: String? = null,
         val address: String? = null,
         val scriptPubKey: String? = null,
         val amount: BigDecimal? = null,
@@ -225,6 +226,7 @@ data class Transaction(
         val txid: String? = null,
         val hash: String? = null,
         val size: Long? = null,
+        val weight: Long? = null,
         val vsize: Long? = null,
         val version: Long? = null,
         val locktime: Long? = null,

@@ -149,7 +149,7 @@ interface BitcoinRpcClient {
     fun getRawMemPool(verbose: Boolean = false): List<Map<*, *>>
 
     @JsonRpcMethod("getrawtransaction")
-    fun getRawTransaction(transactionId: String): Transaction
+    fun getRawTransaction(transactionId: String, verbosity: Int = 1): Transaction
 
     @JsonRpcMethod("getreceivedbyaddress")
     fun getReceivedByAddress(address: String, minConfirmations: Int = 1): BigDecimal
@@ -232,7 +232,7 @@ interface BitcoinRpcClient {
             addresses: List<String>? = null,
             includeUnsafe: Boolean? = null,
             queryOptions: QueryOptions? = null
-    ): QueryResult
+    ): List<QueryResult>
 
     @JsonRpcMethod("listwallets")
     fun listWallets(): List<String>
@@ -264,7 +264,7 @@ interface BitcoinRpcClient {
                  feeEstimateMode: FeeEstimateMode? = null)
 
     @JsonRpcMethod("sendrawtransaction")
-    fun sendRawTransaction(transaction: String)
+    fun sendRawTransaction(transaction: String): String
 
     @JsonRpcMethod("sendtoaddress")
     fun sendToAddress(
@@ -311,7 +311,7 @@ interface BitcoinRpcClient {
     fun validateAddress(address: String)
 
     @JsonRpcMethod("verifychain")
-    fun verifyChain()
+    fun verifyChain(): Boolean
 
     @JsonRpcMethod("verifymessage")
     fun verifyMessage(
