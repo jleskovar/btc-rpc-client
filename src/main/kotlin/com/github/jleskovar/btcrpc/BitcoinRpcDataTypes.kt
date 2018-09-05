@@ -313,3 +313,9 @@ data class SearchedTransactionResult(
         val confirmations: Int? = null,
         val time: Long? = null,
         val blocktime: Long? = null)
+
+data class EstimateSmartFee(
+        val feerate: BigDecimal? = null,
+        val errors: List<String>? = null,
+        val blocks: Long? = null
+)

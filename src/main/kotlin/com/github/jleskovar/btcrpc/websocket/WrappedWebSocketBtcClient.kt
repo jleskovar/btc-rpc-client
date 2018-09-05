@@ -324,6 +324,10 @@ class WrappedWebSocketBtcClient(
         delegate.setTransactionFee(fee)
     }
 
+    override fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode?): EstimateSmartFee {
+        return delegate.estimateSmartFee(confTarget, feeEstimateMode)
+    }
+
     override fun signMessage(address: String, message: String) {
         delegate.signMessage(address, message)
     }

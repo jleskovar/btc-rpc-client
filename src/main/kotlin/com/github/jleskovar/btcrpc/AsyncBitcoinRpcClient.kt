@@ -290,6 +290,9 @@ interface AsyncBitcoinRpcClient {
     @JsonRpcMethod("settxfee")
     fun setTransactionFee(fee: Double): CompletableFuture<Void>
 
+    @JsonRpcMethod("estimatesmartfee")
+    fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode? = FeeEstimateMode.CONSERVATIVE): CompletableFuture<EstimateSmartFee>
+
     @JsonRpcMethod("signmessage")
     fun signMessage(
             address: String,
@@ -326,20 +329,20 @@ interface AsyncBitcoinRpcClient {
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawSerialisedTransactions(
             address: String,
-            verbose: Int?=0,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): CompletableFuture<List<String>>
+            verbose: Int? = 0,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): CompletableFuture<List<String>>
 
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawVerboseTransactions(
             address: String,
-            verbose: Int?=1,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): CompletableFuture<List<SearchedTransactionResult>>
+            verbose: Int? = 1,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): CompletableFuture<List<SearchedTransactionResult>>
 
     /**
      * btcd-specific extension methods

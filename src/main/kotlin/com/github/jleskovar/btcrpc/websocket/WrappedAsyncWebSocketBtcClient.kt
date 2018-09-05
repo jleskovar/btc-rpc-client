@@ -325,6 +325,10 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.setTransactionFee(fee)
     }
 
+    override fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode?): CompletableFuture<EstimateSmartFee> {
+        return delegate.estimateSmartFee(confTarget, feeEstimateMode)
+    }
+
     override fun signMessage(address: String, message: String): CompletableFuture<Void> {
         return delegate.signMessage(address, message)
     }
