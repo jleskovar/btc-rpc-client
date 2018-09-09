@@ -205,7 +205,7 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.getRawMemPool(verbose)
     }
 
-    override fun getRawTransaction(transactionId: String): CompletableFuture<Transaction> {
+    override fun getRawTransaction(transactionId: String, verbosity: Int): CompletableFuture<Transaction> {
         return delegate.getRawTransaction(transactionId)
     }
 
@@ -273,7 +273,7 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.listTransactions(account, count, skip, includeWatchOnly)
     }
 
-    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): CompletableFuture<QueryResult> {
+    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): CompletableFuture<List<QueryResult>> {
         return delegate.listUnspent(minConfirmations, maxConfirmations, addresses, includeUnsafe, queryOptions)
     }
 
@@ -309,7 +309,7 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.sendMany(account, addressAmounts, comment, subtractFee, replaceable, minConfirmations, feeEstimateMode)
     }
 
-    override fun sendRawTransaction(transaction: String): CompletableFuture<Void> {
+    override fun sendRawTransaction(transaction: String): CompletableFuture<String> {
         return delegate.sendRawTransaction(transaction)
     }
 
@@ -323,6 +323,10 @@ class WrappedAsyncWebSocketBtcClient(
 
     override fun setTransactionFee(fee: Double): CompletableFuture<Void> {
         return delegate.setTransactionFee(fee)
+    }
+
+    override fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode?): CompletableFuture<EstimateSmartFee> {
+        return delegate.estimateSmartFee(confTarget, feeEstimateMode)
     }
 
     override fun signMessage(address: String, message: String): CompletableFuture<Void> {
@@ -349,7 +353,7 @@ class WrappedAsyncWebSocketBtcClient(
         return delegate.validateAddress(address)
     }
 
-    override fun verifyChain(): CompletableFuture<Void> {
+    override fun verifyChain(): CompletableFuture<Boolean> {
         return delegate.verifyChain()
     }
 

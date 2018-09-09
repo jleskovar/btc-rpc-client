@@ -204,7 +204,7 @@ class WrappedWebSocketBtcClient(
         return delegate.getRawMemPool(verbose)
     }
 
-    override fun getRawTransaction(transactionId: String): Transaction {
+    override fun getRawTransaction(transactionId: String, verbosity: Int): Transaction {
         return delegate.getRawTransaction(transactionId)
     }
 
@@ -272,7 +272,7 @@ class WrappedWebSocketBtcClient(
         return delegate.listTransactions(account, count, skip, includeWatchOnly)
     }
 
-    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): QueryResult {
+    override fun listUnspent(minConfirmations: Int?, maxConfirmations: Int?, addresses: List<String>?, includeUnsafe: Boolean?, queryOptions: QueryOptions?): List<QueryResult> {
         return delegate.listUnspent(minConfirmations, maxConfirmations, addresses, includeUnsafe, queryOptions)
     }
 
@@ -308,8 +308,8 @@ class WrappedWebSocketBtcClient(
         delegate.sendMany(account, addressAmounts, comment, subtractFee, replaceable, minConfirmations, feeEstimateMode)
     }
 
-    override fun sendRawTransaction(transaction: String) {
-        delegate.sendRawTransaction(transaction)
+    override fun sendRawTransaction(transaction: String): String {
+        return delegate.sendRawTransaction(transaction)
     }
 
     override fun sendToAddress(address: String, amount: BigDecimal, comment: String?, commentTo: String?, subtractFee: Boolean?, replaceable: Boolean?, minConfirmations: Int?, feeEstimateMode: FeeEstimateMode?): String {
@@ -322,6 +322,10 @@ class WrappedWebSocketBtcClient(
 
     override fun setTransactionFee(fee: Double) {
         delegate.setTransactionFee(fee)
+    }
+
+    override fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode?): EstimateSmartFee {
+        return delegate.estimateSmartFee(confTarget, feeEstimateMode)
     }
 
     override fun signMessage(address: String, message: String) {
@@ -348,8 +352,8 @@ class WrappedWebSocketBtcClient(
         delegate.validateAddress(address)
     }
 
-    override fun verifyChain() {
-        delegate.verifyChain()
+    override fun verifyChain(): Boolean {
+        return delegate.verifyChain()
     }
 
     override fun verifyMessage(address: String, signature: String, message: String) {

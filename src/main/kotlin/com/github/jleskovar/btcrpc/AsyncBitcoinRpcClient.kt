@@ -150,7 +150,7 @@ interface AsyncBitcoinRpcClient {
     fun getRawMemPool(verbose: Boolean = false): CompletableFuture<List<Map<*, *>>>
 
     @JsonRpcMethod("getrawtransaction")
-    fun getRawTransaction(transactionId: String): CompletableFuture<Transaction>
+    fun getRawTransaction(transactionId: String, verbosity: Int = 1): CompletableFuture<Transaction>
 
     @JsonRpcMethod("getreceivedbyaddress")
     fun getReceivedByAddress(address: String, minConfirmations: Int = 1): CompletableFuture<BigDecimal>
@@ -234,7 +234,7 @@ interface AsyncBitcoinRpcClient {
             addresses: List<String>? = null,
             includeUnsafe: Boolean? = null,
             queryOptions: QueryOptions? = null
-    ): CompletableFuture<QueryResult>
+    ): CompletableFuture<List<QueryResult>>
 
     @JsonRpcMethod("listwallets")
     fun listWallets(): CompletableFuture<List<String>>
@@ -267,7 +267,7 @@ interface AsyncBitcoinRpcClient {
     ): CompletableFuture<Void>
 
     @JsonRpcMethod("sendrawtransaction")
-    fun sendRawTransaction(transaction: String): CompletableFuture<Void>
+    fun sendRawTransaction(transaction: String): CompletableFuture<String>
 
     @JsonRpcMethod("sendtoaddress")
     fun sendToAddress(
@@ -289,6 +289,9 @@ interface AsyncBitcoinRpcClient {
 
     @JsonRpcMethod("settxfee")
     fun setTransactionFee(fee: Double): CompletableFuture<Void>
+
+    @JsonRpcMethod("estimatesmartfee")
+    fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode? = FeeEstimateMode.CONSERVATIVE): CompletableFuture<EstimateSmartFee>
 
     @JsonRpcMethod("signmessage")
     fun signMessage(
@@ -314,7 +317,7 @@ interface AsyncBitcoinRpcClient {
     fun validateAddress(address: String): CompletableFuture<Void>
 
     @JsonRpcMethod("verifychain")
-    fun verifyChain(): CompletableFuture<Void>
+    fun verifyChain(): CompletableFuture<Boolean>
 
     @JsonRpcMethod("verifymessage")
     fun verifyMessage(
@@ -326,20 +329,20 @@ interface AsyncBitcoinRpcClient {
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawSerialisedTransactions(
             address: String,
-            verbose: Int?=0,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): CompletableFuture<List<String>>
+            verbose: Int? = 0,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): CompletableFuture<List<String>>
 
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawVerboseTransactions(
             address: String,
-            verbose: Int?=1,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): CompletableFuture<List<SearchedTransactionResult>>
+            verbose: Int? = 1,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): CompletableFuture<List<SearchedTransactionResult>>
 
     /**
      * btcd-specific extension methods

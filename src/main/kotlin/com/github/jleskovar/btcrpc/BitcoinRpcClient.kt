@@ -149,7 +149,7 @@ interface BitcoinRpcClient {
     fun getRawMemPool(verbose: Boolean = false): List<Map<*, *>>
 
     @JsonRpcMethod("getrawtransaction")
-    fun getRawTransaction(transactionId: String): Transaction
+    fun getRawTransaction(transactionId: String, verbosity: Int = 1): Transaction
 
     @JsonRpcMethod("getreceivedbyaddress")
     fun getReceivedByAddress(address: String, minConfirmations: Int = 1): BigDecimal
@@ -232,7 +232,7 @@ interface BitcoinRpcClient {
             addresses: List<String>? = null,
             includeUnsafe: Boolean? = null,
             queryOptions: QueryOptions? = null
-    ): QueryResult
+    ): List<QueryResult>
 
     @JsonRpcMethod("listwallets")
     fun listWallets(): List<String>
@@ -264,7 +264,7 @@ interface BitcoinRpcClient {
                  feeEstimateMode: FeeEstimateMode? = null)
 
     @JsonRpcMethod("sendrawtransaction")
-    fun sendRawTransaction(transaction: String)
+    fun sendRawTransaction(transaction: String): String
 
     @JsonRpcMethod("sendtoaddress")
     fun sendToAddress(
@@ -286,6 +286,9 @@ interface BitcoinRpcClient {
 
     @JsonRpcMethod("settxfee")
     fun setTransactionFee(fee: Double)
+
+    @JsonRpcMethod("estimatesmartfee")
+    fun estimateSmartFee(confTarget: Int, feeEstimateMode: FeeEstimateMode? = FeeEstimateMode.CONSERVATIVE): EstimateSmartFee
 
     @JsonRpcMethod("signmessage")
     fun signMessage(
@@ -311,7 +314,7 @@ interface BitcoinRpcClient {
     fun validateAddress(address: String)
 
     @JsonRpcMethod("verifychain")
-    fun verifyChain()
+    fun verifyChain(): Boolean
 
     @JsonRpcMethod("verifymessage")
     fun verifyMessage(
@@ -323,20 +326,20 @@ interface BitcoinRpcClient {
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawSerialisedTransactions(
             address: String,
-            verbose: Int?=0,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): List<String>
+            verbose: Int? = 0,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): List<String>
 
     @JsonRpcMethod("searchrawtransactions")
     fun searchRawVerboseTransactions(
             address: String,
-            verbose: Int?=1,
-            skip: Int?=null,
-            count: Int?=null,
-            vInExtra: Int?=null,
-            reverse: Boolean?=null): List<SearchedTransactionResult>
+            verbose: Int? = 1,
+            skip: Int? = null,
+            count: Int? = null,
+            vInExtra: Int? = null,
+            reverse: Boolean? = null): List<SearchedTransactionResult>
 
     /**
      * btcd-specific extension methods
