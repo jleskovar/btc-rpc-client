@@ -71,12 +71,6 @@
 			<version>${kotlin.version}</version>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.bitcoinj</groupId>
-			<artifactId>bitcoinj-core</artifactId>
-			<version>0.14.5</version>
-			<optional>true</optional>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->
 		<dependency>
 			<groupId>io.reactivex.rxjava2</groupId>
